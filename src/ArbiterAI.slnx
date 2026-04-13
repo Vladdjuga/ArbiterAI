@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="ArbiterAI.Sdk.Tests/ArbiterAI.Sdk.Tests.csproj" />
   <Project Path="ArbiterAI.Sdk/ArbiterAI.Sdk.csproj" />
+  <Project Path="ArbiterAI.Tools.FileSystem/ArbiterAI.Tools.FileSystem.csproj" />
 </Solution>
