@@ -1,5 +1,11 @@
 # OpenClaw Enhanced - AI Agent Governance Platform
 
+![Status](https://img.shields.io/badge/status-concept-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
+![.NET](https://img.shields.io/badge/.NET-8%2B-512BD4?logo=dotnet&logoColor=white)
+![MCP](https://img.shields.io/badge/MCP-supported-blue)
+![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
+
 > SDK-first governance for enterprise AI agents: secure, typed, auditable.
 
 OpenClaw Enhanced is an SDK-first platform for building, configuring, and governing AI agents with MCP servers in enterprise .NET environments.
@@ -130,7 +136,7 @@ Early concept and architecture definition.
 
 ## Contributing
 
-Contributions are welcome.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow, branch naming, commit style, and pull request checklist.
 
 1. Open an issue to discuss a feature or bug.
 2. Submit a pull request with a focused change.
@@ -138,4 +144,4 @@ Contributions are welcome.
 
 ## License
 
-License is not defined yet.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
