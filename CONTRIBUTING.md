@@ -1,4 +1,4 @@
-# Contributing to OpenClaw Enhanced
+# Contributing to ArbiterAI
 
 Thanks for your interest in contributing.
 

@@ -1,4 +1,4 @@
-# OpenClaw Enhanced - AI Agent Governance Platform
+# ArbiterAI - AI Agent Governance Platform
 
 ![Status](https://img.shields.io/badge/status-concept-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -8,13 +8,13 @@
 
 > SDK-first governance for enterprise AI agents: secure, typed, auditable.
 
-OpenClaw Enhanced is an SDK-first platform for building, configuring, and governing AI agents with MCP servers in enterprise .NET environments.
+ArbiterAI is an SDK-first platform for building, configuring, and governing AI agents with MCP servers in enterprise .NET environments.
 
 The core product is a typed C# SDK distributed via NuGet. CLI and Web UI are optional layers built on top of the same SDK.
 
 ## Overview
 
-OpenClaw Enhanced focuses on **agent governance**, not just orchestration.
+ArbiterAI focuses on **agent governance**, not just orchestration.
 
 - Build agent capabilities through a fluent C# API
 - Configure MCP servers as typed services
@@ -108,7 +108,7 @@ A web dashboard for operational visibility and management:
 
 ## Use Cases
 
-OpenClaw Enhanced is designed for teams that need:
+ArbiterAI is designed for teams that need:
 
 - strongly typed agent configuration
 - operational control and policy enforcement
