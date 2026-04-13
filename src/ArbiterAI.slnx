@@ -1,4 +1,13 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../CONTRIBUTING.md" />
+    <File Path="../LICENSE" />
+    <File Path="../PLAN.md" />
+    <File Path="../README.md" />
+  </Folder>
+  <Project Path="ArbiterAI.Examples/ArbiterAI.Examples.csproj" />
+  <Project Path="ArbiterAI.Providers.AzureOpenAI/ArbiterAI.Providers.AzureOpenAI.csproj" />
+  <Project Path="ArbiterAI.Providers.OpenAI/ArbiterAI.Providers.OpenAI.csproj" />
   <Project Path="ArbiterAI.Sdk.Tests/ArbiterAI.Sdk.Tests.csproj" />
   <Project Path="ArbiterAI.Sdk/ArbiterAI.Sdk.csproj" />
   <Project Path="ArbiterAI.Tools.FileSystem/ArbiterAI.Tools.FileSystem.csproj" />
