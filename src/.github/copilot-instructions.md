@@ -3,6 +3,8 @@
 ## General Guidelines
 - Follow best practices for code readability and maintainability.
 - Use clear and descriptive comments to explain complex logic at a moderate level, ensuring sufficient understanding without excessive detail.
+- Introduce an `ILLMClient` abstraction to support LLM-driven command/tool calling, enhancing functionality and integration. Configure `ILLMClient` on `IAgentBuilder`, ensuring that `IAgentRuntime` method signatures remain independent of `ILLMClient`.
+- Use one class per file; do not place multiple classes in a single file.
 
 ## Code Style
 - Adhere to the standard C# naming conventions.

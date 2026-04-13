@@ -17,13 +17,8 @@ public static class AzureOpenAIAgentBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.AddModelProvider(AzureOpenAIModelProvider.Instance);
+        return builder
+            .AddModelProvider(AzureOpenAIModelProvider.Instance)
+            .UseModelClient(AzureOpenAIModelClient.Instance);
     }
-}
-
-internal sealed class AzureOpenAIModelProvider : IModelProvider
-{
-    public static AzureOpenAIModelProvider Instance { get; } = new();
-
-    public string Name => "AzureOpenAI";
 }

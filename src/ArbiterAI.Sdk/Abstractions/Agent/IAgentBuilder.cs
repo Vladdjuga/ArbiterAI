@@ -15,6 +15,13 @@ public interface IAgentBuilder
     IAgentBuilder AddModelProvider(IModelProvider modelProvider);
 
     /// <summary>
+    /// Sets the model client used by the built runtime.
+    /// </summary>
+    /// <param name="modelClient">The model client instance.</param>
+    /// <returns>The current builder instance.</returns>
+    IAgentBuilder UseModelClient(IModelClient modelClient);
+
+    /// <summary>
     /// Builds the configured agent runtime.
     /// </summary>
     /// <returns>A configured <see cref="IAgentRuntime"/> instance.</returns>
