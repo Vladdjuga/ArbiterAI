@@ -1,6 +1,7 @@
 namespace ArbiterAI.Sdk.Abstractions.Agent;
 
 using ArbiterAI.Sdk.Abstractions.Model;
+using ArbiterAI.Sdk.Abstractions.Tool;
 
 /// <summary>
 /// Represents a builder used to configure and create an <see cref="IAgentRuntime"/> instance.
@@ -13,6 +14,13 @@ public interface IAgentBuilder
     /// <param name="modelProvider">The model provider to register.</param>
     /// <returns>The current builder instance.</returns>
     IAgentBuilder AddModelProvider(IModelProvider modelProvider);
+
+    /// <summary>
+    /// Adds a tool that can be invoked by the agent runtime.
+    /// </summary>
+    /// <param name="tool">The tool to register.</param>
+    /// <returns>The current builder instance.</returns>
+    IAgentBuilder AddTool(ITool tool);
 
     /// <summary>
     /// Sets the model client used by the built runtime.

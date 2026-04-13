@@ -1,6 +1,7 @@
 using ArbiterAI.Providers.AzureOpenAI;
 using ArbiterAI.Sdk.Abstractions.Agent;
 using ArbiterAI.Sdk.Abstractions.Model;
+using ArbiterAI.Sdk.Abstractions.Tool;
 
 var builder = new ExampleAgentBuilder();
 builder.AddAzureOpenAIProvider();
@@ -14,6 +15,7 @@ await runtime.RunAsync();
 internal sealed class ExampleAgentBuilder : IAgentBuilder
 {
     private readonly List<IModelProvider> _providers = [];
+    private readonly List<ITool> _tools = [];
     private IModelClient? _modelClient;
 
     public string? SelectedProviderName { get; private set; }
@@ -25,6 +27,14 @@ internal sealed class ExampleAgentBuilder : IAgentBuilder
 
         _providers.Add(modelProvider);
         SelectedProviderName ??= modelProvider.Name;
+        return this;
+    }
+
+    public IAgentBuilder AddTool(ITool tool)
+    {
+        ArgumentNullException.ThrowIfNull(tool);
+
+        _tools.Add(tool);
         return this;
     }
 
@@ -41,10 +51,15 @@ internal sealed class ExampleAgentBuilder : IAgentBuilder
 
 internal sealed class ExampleAgentRuntime : IAgentRuntime
 {
-    public Task RunAsync(CancellationToken cancellationToken = default)
+    public Task<string> RunOnceAsync(CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("Example runtime executed.");
-        return Task.CompletedTask;
+        Console.WriteLine("Example runtime single step executed.");
+        return Task.FromResult("Example response");
+    }
+
+    public async Task RunAsync(CancellationToken cancellationToken = default)
+    {
+        _ = await RunOnceAsync(cancellationToken);
     }
 }
 

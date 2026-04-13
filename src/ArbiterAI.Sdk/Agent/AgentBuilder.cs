@@ -1,5 +1,6 @@
 using ArbiterAI.Sdk.Abstractions.Agent;
 using ArbiterAI.Sdk.Abstractions.Model;
+using ArbiterAI.Sdk.Abstractions.Tool;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,13 +22,31 @@ public sealed class AgentBuilder : IAgentBuilder
     public AgentBuilder(string configPath = "appsettings.json")
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(configPath);
-
-        var configuration = new ConfigurationBuilder()
-            .AddJsonFile(configPath)
-            .Build();
+        var configuration = BuildConfiguration(configPath);
 
         Services.AddSingleton<IConfiguration>(configuration);
         Services.AddSingleton<IAgentRuntime, AgentRuntime>();
+    }
+
+    private static IConfiguration BuildConfiguration(string configPath)
+    {
+        var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")
+            ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+        var directory = Path.GetDirectoryName(configPath);
+        var fileName = Path.GetFileNameWithoutExtension(configPath);
+        var extension = Path.GetExtension(configPath);
+
+        var configurationBuilder = new ConfigurationBuilder()
+            .AddJsonFile(configPath, optional: true, reloadOnChange: true);
+
+        if (!string.IsNullOrWhiteSpace(environment))
+        {
+            var environmentConfigPath = Path.Combine(directory ?? string.Empty, $"{fileName}.{environment}{extension}");
+            configurationBuilder.AddJsonFile(environmentConfigPath, optional: true, reloadOnChange: true);
+        }
+
+        return configurationBuilder.Build();
     }
 
     /// <inheritdoc />
@@ -36,6 +55,15 @@ public sealed class AgentBuilder : IAgentBuilder
         ArgumentNullException.ThrowIfNull(modelProvider);
 
         Services.AddSingleton<IModelProvider>(modelProvider);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public IAgentBuilder AddTool(ITool tool)
+    {
+        ArgumentNullException.ThrowIfNull(tool);
+
+        Services.AddSingleton<ITool>(tool);
         return this;
     }
 
