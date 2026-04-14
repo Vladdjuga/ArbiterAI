@@ -10,6 +10,7 @@
 - Pass tool invocation payloads as raw JSON strings to tools, with the tools responsible for parsing their own input.
 - Implement a `ToolCallContext` for typed parameter access during tool invocation, and utilize `ToolResult` for handling results.
 - Design an `AgentLoop` to facilitate multi-turn LLM conversations with the capability for parallel tool invocation.
+- Load `AgentConfig` from the "agent" section in JSON configuration files, allowing users to customize agent identity and instructions without code changes.
 
 ## Code Style
 - Adhere to the standard C# naming conventions.

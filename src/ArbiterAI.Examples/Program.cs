@@ -2,15 +2,30 @@ using ArbiterAI.Providers.AzureOpenAI;
 using ArbiterAI.Sdk.Abstractions.Agent;
 using ArbiterAI.Sdk.Abstractions.Model;
 using ArbiterAI.Sdk.Abstractions.Tool;
+using ArbiterAI.Sdk.Agent;
 
-var builder = new ExampleAgentBuilder();
+// Build agent with configuration loaded from appsettings.json
+var builder = new AgentBuilder();
 builder.AddAzureOpenAIProvider();
 builder.UseModelClient(new ExampleModelClient());
 
+// Optionally override configuration programmatically
+// builder.ConfigureAgent(cfg =>
+// {
+//     cfg.Name = "Custom Agent";
+//     cfg.Description = "A custom agent";
+// });
+
 var runtime = builder.Build();
-Console.WriteLine($"Selected provider: {builder.SelectedProviderName ?? "None"}");
-Console.WriteLine($"Model client configured: {builder.HasModelClient}");
+Console.WriteLine($"Agent: {runtime.History}");
+Console.WriteLine("Running example...");
 await runtime.RunAsync();
+
+Console.WriteLine($"\nConversation History ({runtime.History.Count} messages):");
+foreach (var msg in runtime.History)
+{
+    Console.WriteLine($"  [{msg.Role}]: {msg.Content.Substring(0, Math.Min(50, msg.Content.Length))}...");
+}
 
 internal sealed class ExampleAgentBuilder : IAgentBuilder
 {
