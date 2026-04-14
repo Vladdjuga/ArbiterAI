@@ -1,147 +1,104 @@
-# ArbiterAI - AI Agent Governance Platform
+# ArbiterAI
 
-![Status](https://img.shields.io/badge/status-concept-orange)
-![License](https://img.shields.io/badge/license-MIT-green)
-![.NET](https://img.shields.io/badge/.NET-8%2B-512BD4?logo=dotnet&logoColor=white)
-![MCP](https://img.shields.io/badge/MCP-supported-blue)
-![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
+**A modular .NET agent runtime with pluggable model providers and tools.**
 
-> SDK-first governance for enterprise AI agents: secure, typed, auditable.
+![status](https://img.shields.io/badge/status-early%20development-7c3aed)
+![platform](https://img.shields.io/badge/platform-.NET%2010-0ea5e9)
+![license](https://img.shields.io/badge/license-MIT-22c55e)
 
-ArbiterAI is an SDK-first platform for building, configuring, and governing AI agents with MCP servers in enterprise .NET environments.
+ArbiterAI is an SDK-first project for building governed AI agents in C#.  
+The repository currently includes a working core runtime loop, tool invocation abstractions, and an Azure OpenAI provider placeholder, plus scaffolding for future packages.
 
-The core product is a typed C# SDK distributed via NuGet. CLI and Web UI are optional layers built on top of the same SDK.
+## What is implemented
 
-## Overview
+| Area | Status | Notes |
+|---|---|---|
+| Solution layout (`src/ArbiterAI.slnx`) | ✅ | Multi-project solution is in place |
+| Core SDK contracts (`IAgentBuilder`, `IAgentRuntime`, model/tool abstractions) | ✅ | Public abstractions are defined |
+| `AgentBuilder` DI/config wiring | ✅ | Loads `appsettings.json` + environment variant |
+| `AgentRuntime` single-step and loop execution | ✅ | Supports JSON-based `final` and `tool_call` response handling |
+| Tool registry + invocation pipeline (`ToolFactory`, `ToolInvoker`) | ✅ | Includes schema generation and typed `ToolCallContext` |
+| Agent config model (`AgentConfig`) | ✅ | Name, description, capabilities, system instructions |
+| Azure OpenAI provider package | ⚠️ Partial | Provider extension exists, model client is placeholder response |
+| Example console app | ✅ | Demonstrates builder/runtime usage |
 
-ArbiterAI focuses on **agent governance**, not just orchestration.
+## What is not implemented yet
 
-- Build agent capabilities through a fluent C# API
-- Configure MCP servers as typed services
-- Register custom tools and policy middleware
-- Enforce guardrails before each agent action
-- Integrate audit, identity, and cost tracking from day one
+| Area | Status |
+|---|---|
+| Real OpenAI provider implementation (`ArbiterAI.Providers.OpenAI`) | ❌ Not implemented (project scaffold only) |
+| File system tools (`ArbiterAI.Tools.FileSystem`) | ❌ Not implemented (project scaffold only) |
+| SDK tests (`ArbiterAI.Sdk.Tests`) | ❌ No test files yet |
+| Policy engine and governance middleware | ❌ Not implemented |
+| Audit/event pipeline | ❌ Not implemented |
+| Auth integrations (for example Entra ID) | ❌ Not implemented |
+| CLI package | ❌ Not implemented |
+| Dashboard/UI package | ❌ Not implemented |
+| CI/release automation | ❌ Not present in repo yet |
 
-## Why SDK-First
+## Repository structure
 
-- Existing CLI agent tools already cover command-based workflows
-- Enterprises run on .NET and need native integration into existing systems
-- Compile-time safety catches config errors before runtime
-- Testability: unit-test agent configuration, policies, and tool chains
-- Market gap: Semantic Kernel solves LLM orchestration, not full agent governance
-
-## Core SDK
-
-```csharp
-var agent = new AgentBuilder()
- .UseMcpServer<FileSystemServer>(opts => opts.AllowRead("/src").DenyDelete())
- .UseMcpServer<GitServer>()
- .AddCustomTool<MyDeployTool>()
- .UsePolicy<NoProductionAccessPolicy>()
- .UseAuditLog(sink => sink.ToAzureMonitor())
- .UseAuth(auth => auth.AzureEntraId("tenant-id"))
- .Build();
+```text
+src/
+  ArbiterAI.slnx
+  appsettings.json
+  ArbiterAI.Sdk/                     # Core abstractions + builder/runtime + tool pipeline
+  ArbiterAI.Providers.AzureOpenAI/   # Azure provider registration + placeholder model client
+  ArbiterAI.Providers.OpenAI/        # Scaffold only
+  ArbiterAI.Tools.FileSystem/        # Scaffold only
+  ArbiterAI.Examples/                # Console sample
+  ArbiterAI.Sdk.Tests/               # Test project scaffold
 ```
 
-### SDK Capabilities
+## Quick start
 
-- Fluent API in an ASP.NET Core middleware-pipeline style
-- Typed MCP server registration and configuration
-- Custom MCP tool authoring via regular C# classes
-- Policy middleware chain evaluated before every action
-- Programmatic file operations (README/config/files) without manual editing
+### 1. Prerequisites
 
-## CLI Layer
+- .NET SDK 10.0
 
-The CLI is an optional quick-start interface for teams that do not need deep customization immediately.
+### 2. Build
 
-Example commands:
+```bash
+dotnet build src/ArbiterAI.slnx
+```
 
-- `agent init`
-- `agent run`
-- `agent add-tool`
-- `agent policy list`
+### 3. Run the example
 
-All commands map to the same underlying SDK primitives.
+```bash
+dotnet run --project src/ArbiterAI.Examples/ArbiterAI.Examples.csproj
+```
 
-## Web UI Layer
+## Current API snapshot
 
-A web dashboard for operational visibility and management:
+```csharp
+using ArbiterAI.Sdk.Agent;
+using ArbiterAI.Providers.AzureOpenAI;
 
-- Agent lifecycle management
-- Action logs and real-time monitoring
-- Visual MCP tool-chain constructor
-- Usage, cost, and activity analytics
+var builder = new AgentBuilder();
+builder.AddAzureOpenAIProvider();
+builder.UseModelClient(new ExampleModelClient()); // app/runtime model client
 
-## Features
+var runtime = builder.Build();
+await runtime.RunAsync();
+```
 
-- **RBAC**: define who can grant which permissions to which agents (Azure Entra ID integration)
-- **Audit trail**: log every agent action, requester identity, and modified artifacts
-- **Policy engine**: implement guardrails in C# classes or configuration
-- **Cost tracking**: monitor token spend per user/team/department (Azure OpenAI billing)
-- **Multi-tenancy**: isolate agents, policies, and data across business units
-- **Sandboxing**: restrict execution environment and validate actions before execution
+## Configuration
 
-## Package Architecture
+`src/appsettings.json` contains the `agent` section currently consumed by `AgentBuilder`:
 
-| Package | Purpose |
-| --- | --- |
-| AgentPlatform.Sdk | Core builder, MCP integration, policy engine |
-| AgentPlatform.Tools.FileSystem | Built-in filesystem MCP tool |
-| AgentPlatform.Tools.Git | Built-in Git MCP tool |
-| AgentPlatform.Auth.EntraId | Azure Entra ID integration |
-| AgentPlatform.Dashboard | Blazor dashboard as embedded middleware |
-| agent-cli (dotnet tool) | SDK-powered command-line wrapper |
+- `name`
+- `description`
+- `capabilities`
+- `systemInstructions`
 
-## Technology Stack
+Environment-specific config files are also supported via `DOTNET_ENVIRONMENT` / `ASPNETCORE_ENVIRONMENT`.
 
-- C# / .NET
-- ASP.NET Core
-- MCP protocol
-- LLM providers (Azure OpenAI-first)
-- Azure Entra ID
-- Blazor
-- SignalR (real-time updates)
-- OS API integration
-- SQL / Cosmos DB
-- NuGet packaging ecosystem
+## Development notes
 
-## Use Cases
-
-ArbiterAI is designed for teams that need:
-
-- strongly typed agent configuration
-- operational control and policy enforcement
-- identity-aware authorization
-- auditable, secure, and scalable agent operations
-
-## Getting Started (Planned)
-
-1. Install the core package from NuGet.
-2. Create an agent with AgentBuilder and register MCP servers.
-3. Add policies, audit sinks, and authentication providers.
-4. Run via your host application or the CLI wrapper.
-
-## Roadmap
-
-- [ ] Publish core SDK package
-- [ ] Publish built-in FileSystem and Git MCP tools
-- [ ] Publish Entra ID authentication integration
-- [ ] Release CLI wrapper
-- [ ] Release dashboard (Blazor + SignalR)
-
-## Status
-
-Early concept and architecture definition.
-
-## Contributing
-
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution workflow, branch naming, commit style, and pull request checklist.
-
-1. Open an issue to discuss a feature or bug.
-2. Submit a pull request with a focused change.
-3. Include tests or usage examples when applicable.
+- This is an **early-stage** codebase; several packages are scaffolds for upcoming work.
+- The roadmap and planned milestones are tracked in [`PLAN.md`](./PLAN.md).
+- Contribution guidelines are in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE).
+MIT — see [`LICENSE`](./LICENSE).
