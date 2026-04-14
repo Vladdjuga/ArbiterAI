@@ -51,15 +51,22 @@ internal sealed class ExampleAgentBuilder : IAgentBuilder
 
 internal sealed class ExampleAgentRuntime : IAgentRuntime
 {
-    public Task<string> RunOnceAsync(CancellationToken cancellationToken = default)
+    private readonly List<AgentMessage> _history = [];
+
+    public IReadOnlyList<AgentMessage> History => _history.AsReadOnly();
+
+    public Task<string> RunOnceAsync(string userMessage, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("Example runtime single step executed.");
-        return Task.FromResult("Example response");
+        Console.WriteLine($"Example runtime single step executed with message: {userMessage}");
+        _history.Add(new AgentMessage { Role = "user", Content = userMessage });
+        var response = "Example response";
+        _history.Add(new AgentMessage { Role = "assistant", Content = response });
+        return Task.FromResult(response);
     }
 
     public async Task RunAsync(CancellationToken cancellationToken = default)
     {
-        _ = await RunOnceAsync(cancellationToken);
+        _ = await RunOnceAsync("Hello, help me!", cancellationToken);
     }
 }
 

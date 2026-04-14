@@ -1,3 +1,5 @@
+using System.Text.Json.Nodes;
+
 namespace ArbiterAI.Sdk.Abstractions.Tool;
 
 /// <summary>
@@ -11,10 +13,21 @@ public interface ITool
     string Name { get; }
 
     /// <summary>
-    /// Executes the tool with the given input.
+    /// Gets the human-readable tool description for the LLM.
     /// </summary>
-    /// <param name="input">The tool input payload.</param>
+    string Description { get; }
+
+    /// <summary>
+    /// Executes the tool with the given call context.
+    /// </summary>
+    /// <param name="context">The tool call context containing metadata and typed parameter access.</param>
     /// <param name="cancellationToken">A token used to cancel the operation.</param>
-    /// <returns>The tool execution result payload.</returns>
-    Task<string> ExecuteAsync(string input, CancellationToken cancellationToken = default);
+    /// <returns>The tool execution result.</returns>
+    Task<ToolResult> ExecuteAsync(ToolCallContext context, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the JSON schema describing the tool's input parameters.
+    /// </summary>
+    /// <returns>The parameter schema as a JSON object.</returns>
+    JsonObject GetParametersSchema();
 }

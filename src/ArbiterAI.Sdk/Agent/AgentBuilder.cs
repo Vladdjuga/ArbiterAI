@@ -1,6 +1,7 @@
 using ArbiterAI.Sdk.Abstractions.Agent;
 using ArbiterAI.Sdk.Abstractions.Model;
 using ArbiterAI.Sdk.Abstractions.Tool;
+using ArbiterAI.Sdk.Tool;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +26,9 @@ public sealed class AgentBuilder : IAgentBuilder
         var configuration = BuildConfiguration(configPath);
 
         Services.AddSingleton<IConfiguration>(configuration);
+        Services.AddSingleton(new AgentConfig());
+        Services.AddSingleton<IToolFactory, ToolFactory>();
+        Services.AddSingleton<IToolInvoker, ToolInvoker>();
         Services.AddSingleton<IAgentRuntime, AgentRuntime>();
     }
 
